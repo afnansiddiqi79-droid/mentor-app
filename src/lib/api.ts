@@ -75,7 +75,16 @@ async function parseResponse<T>(response: Response): Promise<T> {
   return payload as T;
 }
 
-async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+type ApiEnvelope<T> = {
+  success: boolean;
+  data: T;
+  meta?: Record<string, unknown>;
+};
+
+async function requestEnvelope<T>(
+  path: string,
+  options: RequestOptions = {}
+): Promise<ApiEnvelope<T>> {
   const { body, auth = true, headers, ...rest } = options;
   const isFormData = body instanceof FormData;
 
@@ -110,12 +119,21 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     response = await doFetch(false);
   }
 
-  return parseResponse<T>(response);
+  return parseResponse<ApiEnvelope<T>>(response);
+}
+
+/** Returns the `data` payload from the standard `{ success, data, meta }` envelope. */
+async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const payload = await requestEnvelope<T>(path, options);
+  return payload.data;
 }
 
 export const api = {
   get: <T>(path: string, options?: RequestOptions) =>
     request<T>(path, { ...options, method: "GET" }),
+  /** Keeps pagination `meta` alongside the list payload. */
+  getWithMeta: <T>(path: string, options?: RequestOptions) =>
+    requestEnvelope<T>(path, { ...options, method: "GET" }),
   post: <T>(path: string, body?: unknown, options?: RequestOptions) =>
     request<T>(path, { ...options, method: "POST", body }),
   patch: <T>(path: string, body?: unknown, options?: RequestOptions) =>
@@ -177,7 +195,9 @@ export function uploadImage(
 
       xhr.onerror = () =>
         reject(new ApiClientError("Could not reach the upload service", 0));
-      xhr.send(file);
+      const formData = new FormData();
+      formData.append("image", file);
+      xhr.send(formData);
     });
   });
 }

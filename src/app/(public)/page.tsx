@@ -209,8 +209,8 @@ export default async function HomePage() {
                   <BadgeCheck className="size-5" />
                 </span>
                 <div>
-                  <p className="text-xs font-semibold">Verified mentors</p>
-                  <p className="text-[0.65rem] text-muted-foreground">Reviewed profiles</p>
+                  <p className="text-xs font-semibold">Reviewed listings</p>
+                  <p className="text-[0.65rem] text-muted-foreground">Approved by admins</p>
                 </div>
               </div>
             </div>
@@ -433,7 +433,7 @@ export default async function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="border-t bg-brand-navy py-16 text-white md:py-20">
+      <section className="border-t bg-slate-950 py-16 text-white md:py-20">
         <div className="container-page flex flex-col items-center gap-6 text-center">
           <Badge variant="outline" className="border-white/20 text-white">
             Your next chapter starts here

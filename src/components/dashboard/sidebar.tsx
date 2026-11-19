@@ -10,6 +10,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   ListChecks,
+  ShieldCheck,
   UserRound,
   Users,
   Wallet,
@@ -72,15 +73,17 @@ export function DashboardNav({ onNavigate }: { onNavigate?: () => void }) {
           <p className="truncate text-sm font-semibold">{user.name}</p>
           <p className="flex items-center gap-1.5 text-xs capitalize text-muted-foreground">
             {user.role}
-            <Badge
-              variant="outline"
-              className={cn(
-                "h-4 px-1.5 text-[0.6rem] capitalize",
-                user.plan === "pro" && "border-primary/30 text-primary"
-              )}
-            >
-              {user.plan}
-            </Badge>
+            {user.role !== "admin" ? (
+              <Badge
+                variant="outline"
+                className={cn(
+                  "h-4 px-1.5 text-[0.6rem] capitalize",
+                  user.plan === "pro" && "border-primary/30 text-primary"
+                )}
+              >
+                {user.plan}
+              </Badge>
+            ) : null}
           </p>
         </div>
       </div>
@@ -108,26 +111,40 @@ export function DashboardNav({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       <div className="m-3 rounded-xl border bg-card p-4">
-        <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
-          <Wallet className="size-4 text-primary" />
-          {user.plan === "pro" ? "Pro plan active" : "Free plan"}
-        </div>
-        <p className="text-xs leading-relaxed text-muted-foreground">
-          {user.plan === "pro"
-            ? "You have full access to every MentorLagbe feature."
-            : user.role === "tutor"
-              ? "Free tutors can post up to 2 tuitions. Upgrade for unlimited posts."
-              : "Upgrade to Student Pro for priority applications and support."}
-        </p>
-        {user.plan !== "pro" ? (
-          <Link
-            href="/pricing"
-            onClick={onNavigate}
-            className="mt-3 inline-flex text-xs font-semibold text-primary hover:underline"
-          >
-            Compare plans →
-          </Link>
-        ) : null}
+        {user.role === "admin" ? (
+          <>
+            <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
+              <ShieldCheck className="size-4 text-primary" />
+              Administrator
+            </div>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              You have full access to moderation, users, tuitions and transactions.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
+              <Wallet className="size-4 text-primary" />
+              {user.plan === "pro" ? "Pro plan active" : "Free plan"}
+            </div>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              {user.plan === "pro"
+                ? "You have full access to every MentorLagbe feature."
+                : user.role === "tutor"
+                  ? "Free tutors can post up to 2 tuitions. Upgrade for unlimited posts."
+                  : "Upgrade to Student Pro for priority applications and support."}
+            </p>
+            {user.plan !== "pro" ? (
+              <Link
+                href="/pricing"
+                onClick={onNavigate}
+                className="mt-3 inline-flex text-xs font-semibold text-primary hover:underline"
+              >
+                Compare plans →
+              </Link>
+            ) : null}
+          </>
+        )}
       </div>
     </div>
   );

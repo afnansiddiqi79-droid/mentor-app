@@ -55,7 +55,7 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="border-t bg-brand-navy text-slate-200">
+    <footer className="border-t border-white/10 bg-slate-950 text-slate-200">
       <div className="container-page grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
         <div className="space-y-4">
           <Logo inverse />

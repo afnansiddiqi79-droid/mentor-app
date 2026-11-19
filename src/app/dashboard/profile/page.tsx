@@ -206,9 +206,13 @@ function ProfileContent() {
                 <span className="text-muted-foreground">Plan</span>
                 <Badge
                   variant="outline"
-                  className={user.plan === "pro" ? "border-primary/30 text-primary capitalize" : "capitalize"}
+                  className={
+                    user.role !== "admin" && user.plan === "pro"
+                      ? "border-primary/30 text-primary capitalize"
+                      : "capitalize"
+                  }
                 >
-                  {user.plan}
+                  {user.role === "admin" ? "N/A" : user.plan}
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
@@ -223,23 +227,29 @@ function ProfileContent() {
           <Card className="border-primary/20 bg-primary/5">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                {user.plan === "pro" ? (
+                {user.role === "admin" || user.plan === "pro" ? (
                   <Sparkles className="size-4 text-primary" />
                 ) : (
                   <ShieldCheck className="size-4 text-primary" />
                 )}
-                {user.plan === "pro" ? "Pro plan active" : "Free plan"}
+                {user.role === "admin"
+                  ? "Administrator access"
+                  : user.plan === "pro"
+                    ? "Pro plan active"
+                    : "Free plan"}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-xs leading-relaxed text-muted-foreground">
-                {user.plan === "pro"
-                  ? "You have unlimited access to MentorLagbe features."
-                  : user.role === "tutor"
-                    ? "Upgrade to post unlimited tuitions and stand out to students."
-                    : "Upgrade for priority application support and a Pro badge."}
+                {user.role === "admin"
+                  ? "You have full access to moderation, user roles and payment reporting."
+                  : user.plan === "pro"
+                    ? "You have unlimited access to MentorLagbe features."
+                    : user.role === "tutor"
+                      ? "Upgrade to post unlimited tuitions and stand out to students."
+                      : "Upgrade for priority application support and a Pro badge."}
               </p>
-              {user.plan !== "pro" ? (
+              {user.role !== "admin" && user.plan !== "pro" ? (
                 <Button render={<Link href="/pricing" />} className="w-full" size="sm">
                   <UserRound className="size-4" /> Upgrade to Pro
                 </Button>

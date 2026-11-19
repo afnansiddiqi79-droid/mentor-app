@@ -18,7 +18,7 @@ interface RoleGuardProps {
  * so authenticated users are never bounced to /sign-in on reload.
  */
 export function RoleGuard({ roles, children }: RoleGuardProps) {
-  const { user, isPending } = useAuth();
+  const { user, isPending, isSigningOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -27,6 +27,8 @@ export function RoleGuard({ roles, children }: RoleGuardProps) {
   useEffect(() => {
     if (isPending) return;
     if (!user) {
+      // Let an explicit sign-out finish navigating before forcing /sign-in.
+      if (isSigningOut) return;
       const redirect = encodeURIComponent(pathname || "/dashboard");
       router.replace(`/sign-in?redirect=${redirect}`);
       return;
@@ -34,7 +36,7 @@ export function RoleGuard({ roles, children }: RoleGuardProps) {
     if (!allowed) {
       router.replace(dashboardPathForRole(user.role));
     }
-  }, [isPending, user, allowed, router, pathname]);
+  }, [isPending, user, isSigningOut, allowed, router, pathname]);
 
   if (isPending || !user || !allowed) {
     return <LoadingScreen label="Preparing your dashboard" />;

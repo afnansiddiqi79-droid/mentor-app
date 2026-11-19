@@ -154,13 +154,15 @@ function MyTuitions() {
                   </label>
 
                   <div className="flex gap-1.5">
-                    <Button
-                      render={<Link href={`/tuitions/${tuition.id}`} />}
-                      variant="ghost"
-                      size="sm"
-                    >
-                      <Eye className="size-4" /> View
-                    </Button>
+                    {tuition.approvalStatus === "approved" && tuition.isActive ? (
+                      <Button
+                        render={<Link href={`/tuitions/${tuition.id}`} />}
+                        variant="ghost"
+                        size="sm"
+                      >
+                        <Eye className="size-4" /> View
+                      </Button>
+                    ) : null}
                     <Button
                       render={<Link href={`/dashboard/tutor/my-tuitions/${tuition.id}/edit`} />}
                       variant="outline"

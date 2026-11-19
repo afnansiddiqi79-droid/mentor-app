@@ -17,18 +17,9 @@ export function useApi<T>(path: string | null) {
     setLoading(true);
     setError(null);
     try {
-      const response = (await api.get(path)) as unknown as {
-        data?: T;
-        meta?: Record<string, unknown>;
-      };
-      // api.get unwraps the JSON body, which includes data/meta for list routes.
-      if (response && typeof response === "object" && "data" in response) {
-        setData((response.data as T) ?? null);
-        setMeta(response.meta ?? null);
-      } else {
-        setData(response as unknown as T);
-        setMeta(null);
-      }
+      const response = await api.getWithMeta<T>(path);
+      setData(response.data ?? null);
+      setMeta(response.meta ?? null);
     } catch (err) {
       setError(
         err instanceof ApiClientError

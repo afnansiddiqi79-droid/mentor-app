@@ -130,9 +130,9 @@ export default async function TuitionDetailsPage(
                   Teaches {tuition.subject} · {tuition.classLevel}
                 </p>
               </div>
-              <Badge variant="outline" className="w-fit gap-1 border-emerald-500/30 text-emerald-700 dark:text-emerald-400">
+              <Badge variant="outline" className="w-fit gap-1 border-primary/30 text-primary">
                 <GraduationCap className="size-3" />
-                Verified tutor
+                MentorLagbe tutor
               </Badge>
             </CardContent>
           </Card>

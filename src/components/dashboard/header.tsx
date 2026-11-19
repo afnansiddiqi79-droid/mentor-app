@@ -115,7 +115,7 @@ export function DashboardHeader() {
                     {user.email}
                   </span>
                   <Badge variant="secondary" className="w-fit text-[0.65rem] capitalize">
-                    {user.plan} plan
+                    {user.role === "admin" ? "Administrator" : `${user.plan} plan`}
                   </Badge>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

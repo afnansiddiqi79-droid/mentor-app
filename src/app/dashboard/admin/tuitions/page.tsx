@@ -173,14 +173,16 @@ function AdminTuitions() {
               className: "text-right",
               cell: (row) => (
                 <div className="flex justify-end gap-1">
-                  <Button
-                    render={<Link href={`/tuitions/${row.id}`} />}
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label="View public listing"
-                  >
-                    <Eye className="size-4" />
-                  </Button>
+                  {row.approvalStatus === "approved" ? (
+                    <Button
+                      render={<Link href={`/tuitions/${row.id}`} />}
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="View public listing"
+                    >
+                      <Eye className="size-4" />
+                    </Button>
+                  ) : null}
                   {row.approvalStatus !== "approved" ? (
                     <Button
                       size="sm"

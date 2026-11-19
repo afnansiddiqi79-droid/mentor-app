@@ -11,9 +11,12 @@ export default function DashboardIndexPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isPending && user) {
-      router.replace(dashboardPathForRole(user.role));
+    if (isPending) return;
+    if (!user) {
+      router.replace("/sign-in?redirect=/dashboard");
+      return;
     }
+    router.replace(dashboardPathForRole(user.role));
   }, [isPending, user, router]);
 
   return <LoadingScreen label="Opening your dashboard" />;
