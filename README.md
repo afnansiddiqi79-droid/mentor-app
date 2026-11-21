@@ -147,7 +147,8 @@ npm start       # serve the production build
    - `NEXT_PUBLIC_BETTER_AUTH_URL=https://your-api.example.com`
 3. Update the backend `CLIENT_URL` and `BETTER_AUTH_URL` to the deployed origins and redeploy.
 4. Add the production frontend origin to the Stripe Checkout success/cancel URLs (already derived from `CLIENT_URL` in the backend).
-5. Run `npm run build` locally before deploying to catch type errors early.
+5. In Google Cloud Console, add `<API origin>/api/auth/callback/google` as an authorized redirect URI. Google returns to the API, while the frontend sends an absolute `<frontend origin>/dashboard` callback URL for the final post-login redirect.
+6. Run `npm run build` locally before deploying to catch type errors early.
 
 ## Known limitations
 

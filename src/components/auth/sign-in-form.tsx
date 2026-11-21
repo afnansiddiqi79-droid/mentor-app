@@ -22,6 +22,25 @@ import { FormField } from "@/components/form-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+/**
+ * Returns a same-origin path for post-login navigation. Absolute URLs from
+ * other origins are ignored to prevent open redirects.
+ */
+function safeRedirectPath(value: string | null): string {
+  try {
+    const target = new URL(value || "/dashboard", window.location.origin);
+    if (target.origin !== window.location.origin) return "/dashboard";
+    return `${target.pathname}${target.search}${target.hash}`;
+  } catch {
+    return "/dashboard";
+  }
+}
+
+/** Builds an absolute URL on the frontend origin, never the API origin. */
+function frontendUrl(path: string): string {
+  return new URL(path, window.location.origin).toString();
+}
+
 export function SignInForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -49,18 +68,9 @@ export function SignInForm() {
     }
 
     toast.success("Welcome back");
-    const requested =
-      new URLSearchParams(window.location.search).get("redirect") || "/dashboard";
-    // Only allow same-origin relative redirects (blocks //evil.com and /\evil.com).
-    let redirect = "/dashboard";
-    try {
-      const target = new URL(requested, window.location.origin);
-      if (target.origin === window.location.origin) {
-        redirect = `${target.pathname}${target.search}${target.hash}`;
-      }
-    } catch {
-      redirect = "/dashboard";
-    }
+    const redirect = safeRedirectPath(
+      new URLSearchParams(window.location.search).get("redirect")
+    );
     router.push(redirect);
     router.refresh();
   }
@@ -68,9 +78,20 @@ export function SignInForm() {
   async function handleGoogleSignIn() {
     setIsGoogleLoading(true);
     try {
+      const path = safeRedirectPath(
+        new URLSearchParams(window.location.search).get("redirect")
+      );
+      // Better Auth stores callbackURL verbatim and uses it for the final
+      // redirect. A relative value resolves against the API origin (for example
+      // https://<api>/dashboard), so every post-login destination must be an
+      // absolute URL on the frontend origin. /dashboard is role-aware: it sends
+      // students, tutors and admins to their own dashboard after sign-in.
+      const callbackURL = frontendUrl(path);
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+        callbackURL,
+        newUserCallbackURL: callbackURL,
+        errorCallbackURL: frontendUrl("/sign-in"),
       });
     } catch {
       toast.error("Google sign-in failed", {
