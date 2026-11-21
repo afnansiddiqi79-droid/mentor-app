@@ -25,12 +25,18 @@ export default async function TuitionDetailsPage(
 ) {
   const { id } = await props.params;
 
+  // Reject malformed ids before calling the API so the route renders the
+  // framework 404 instead of surfacing a 400 from the backend.
+  if (!/^[a-f\d]{24}$/i.test(id)) notFound();
+
   let tuition: Tuition;
   try {
     const response = await fetchPublic<Tuition>(`/api/tuitions/${id}`);
     tuition = response.data;
   } catch (error) {
-    if (error instanceof ApiClientError && error.status === 404) notFound();
+    if (error instanceof ApiClientError && [400, 404].includes(error.status)) {
+      notFound();
+    }
     throw error;
   }
 

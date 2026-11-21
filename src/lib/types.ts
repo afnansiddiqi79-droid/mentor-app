@@ -5,6 +5,7 @@ export interface AppUser {
   id: string;
   name: string;
   email: string;
+  emailVerified?: boolean;
   image?: string | null;
   role: Role;
   phone?: string;

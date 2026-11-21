@@ -217,8 +217,13 @@ function ProfileContent() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Email</span>
-                <span className="flex items-center gap-1 text-xs text-emerald-600">
-                  <BadgeCheck className="size-3.5" /> Verified
+                <span
+                  className={`flex items-center gap-1 text-xs ${
+                    user.emailVerified ? "text-emerald-600" : "text-muted-foreground"
+                  }`}
+                >
+                  {user.emailVerified ? <BadgeCheck className="size-3.5" /> : null}
+                  {user.emailVerified ? "Verified" : "Not verified"}
                 </span>
               </div>
             </CardContent>

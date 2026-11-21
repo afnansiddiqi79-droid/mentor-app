@@ -4,6 +4,14 @@ A production-style tuition and mentorship marketplace built with **Next.js 16 (A
 
 The backend lives in the sibling repository `mentor-server` (Express 5 + MongoDB + Better Auth + Stripe).
 
+## Live deployment
+
+| Service | URL |
+| --- | --- |
+| Frontend | <https://mentor-app-snowy.vercel.app> |
+| API | <https://mentor-server-three.vercel.app> |
+| API health | <https://mentor-server-three.vercel.app/api/health> |
+
 ## Features
 
 ### Public
@@ -85,15 +93,18 @@ Stripe and ImgBB keys are **server-side only** and belong in the backend `.env`.
 
 ### Demo accounts
 
-Created by `npm run seed` in the backend:
+Created by `npm run seed` in the backend. Demo passwords come from
+`DEMO_PASSWORD`; the seed script defaults to `Password123!` only when that
+variable is not set.
 
 | Role | Email | Password |
 | --- | --- | --- |
-| Admin | `admin@mentorlagbe.com` | `Admin@12345` |
-| Tutor | `tutor@mentorlagbe.com` | `Password123!` |
-| Student | `student@mentorlagbe.com` | `Password123!` |
+| Tutor | `tutor@mentorlagbe.com` | `DEMO_PASSWORD` |
+| Student | `student@mentorlagbe.com` | `DEMO_PASSWORD` |
 
-Admin accounts cannot be created from the public sign-up page.
+The admin account is created from the backend-only `ADMIN_EMAIL` and
+`ADMIN_PASSWORD` variables. Its password is never documented or committed
+here. Admin accounts cannot be created from the public sign-up page.
 
 ## Scripts
 
@@ -148,13 +159,15 @@ npm start       # serve the production build
 3. Update the backend `CLIENT_URL` and `BETTER_AUTH_URL` to the deployed origins and redeploy.
 4. Add the production frontend origin to the Stripe Checkout success/cancel URLs (already derived from `CLIENT_URL` in the backend).
 5. In Google Cloud Console, add `<API origin>/api/auth/callback/google` as an authorized redirect URI. Google returns to the API, while the frontend sends an absolute `<frontend origin>/dashboard` callback URL for the final post-login redirect.
-6. Run `npm run build` locally before deploying to catch type errors early.
+6. Register the Stripe webhook at `<API origin>/api/payments/webhook` for `checkout.session.completed` and `checkout.session.async_payment_succeeded`.
+7. Run `npm run build` locally before deploying to catch type errors early.
 
 ## Known limitations
 
 - Stripe Checkout and ImgBB uploads require real API keys. Without them the backend returns a clear `503` and the UI shows a toast instead of failing silently.
 - Email verification is not enforced because no transactional email provider is configured.
-- There is no automated browser test suite; verification is done with lint, production builds and live API smoke tests.
+- The backend has Node test-runner unit tests (`npm test`, currently 28 tests). Browser flows are verified with lint, production builds and live API/UI smoke tests; there is no automated browser test suite.
+- Demo accounts are seeded only for evaluation. Rotate `ADMIN_PASSWORD` and `DEMO_PASSWORD` before opening a deployment to the public.
 
 ## Repository
 

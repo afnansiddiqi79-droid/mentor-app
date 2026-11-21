@@ -119,10 +119,10 @@ export default async function HomePage() {
   }
 
   const displayStats = [
-    { label: "Verified tutors", value: stats.totalTutors, icon: BadgeCheck },
+    { label: "Tutors", value: stats.totalTutors, icon: BadgeCheck },
     { label: "Active tuitions", value: stats.totalTuitions, icon: BookOpen },
-    { label: "Students learning", value: stats.totalStudents, icon: Users },
-    { label: "Accepted matches", value: `${stats.successRate}%`, icon: TrendingUp },
+    { label: "Students", value: stats.totalStudents, icon: Users },
+    { label: "Acceptance rate", value: `${stats.successRate}%`, icon: TrendingUp },
   ];
 
   return (
@@ -157,7 +157,7 @@ export default async function HomePage() {
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-2">
                 <CheckCircle2 className="size-4 text-emerald-600" />
-                Verified tutor profiles
+                Tutor profiles with clear fees
               </span>
               <span className="inline-flex items-center gap-2">
                 <CheckCircle2 className="size-4 text-emerald-600" />
@@ -198,7 +198,7 @@ export default async function HomePage() {
                   This week on MentorLagbe
                 </p>
                 <p className="mt-1 text-sm font-semibold">
-                  {stats.totalApplications || "12"}+ applications sent to tutors
+                  {stats.totalApplications} applications sent to tutors
                 </p>
               </div>
             </div>
